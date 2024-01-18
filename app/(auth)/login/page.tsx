@@ -44,10 +44,9 @@ function Login() {
     loginMutation.mutate(data, {
       onSuccess: () => {
         toast.success("Login Successfull.");
-        router.push("/login");
+        router.push("/");
       },
       onError: (error: any) => {
-        console.log( )
         toast.error("Login Failed" , {description:error?.response?.data?.message ||"Something went wrong.Please try again."});
       },
     });

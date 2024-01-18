@@ -4,20 +4,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BookForm from "./create-book/CreateBook";
 import IdentityVerification from "./identity-verification/IdentityVerification";
 import PaymentSetupForm from "./payment-setup/PaymentSetup";
+import { useQuery } from "@tanstack/react-query";
+import { Axios } from "@/utils/axios";
 
-function MainSection({ section }: section) {
+function MainSection({ section , user}:any) {
+
+const {identityDetail} = user;
+ 
   return (
     <div className="w-full border rounded border-gray-300 h-screen mt-2 mx-1 overflow-auto">
       {section === "set-up-profile" && (
         <div className="w-full m-auto ">
           <ProfileForm
-            username="prakashshahi"
-            name="Prakash Shahi"
-            email="prakashshaiprince@gmail.com"
-            email_verified="Verified"
-            socialLink={["https://facebpook.com", "https://linkedinc.com"]}
-            description="hello i am prakash shahi"
-            isSuspended="Your account is well."
+            userId={user?.userId || ""}
+            name={user?.name || ""}
+            email={user?.email || ""}
+            email_verified={user?.email_verified ? "verified" : "Not Verified"}
+            socialLink={user?.socialLink.toString() || ""}
+            description={user?.description || ""}
+            isSuspended={
+              user?.isSuspended?.suspended
+                ? "You are suspended."
+                : "Your account is well."
+            }
           />
         </div>
       )}
@@ -42,14 +51,16 @@ function MainSection({ section }: section) {
       {section === "identity-verification" && (
         <div className="w-full m-auto">
           <IdentityVerification
-            name=""
-            country=""
-            province=""
-            district=""
-            municipality=""
-            wardNo=""
-            toleName=""
-            profession=""
+            name={identityDetail?.name}
+            country={identityDetail?.country}
+            province={identityDetail?.province}
+            district={identityDetail?.district}
+            municipality={identityDetail?.municipality}
+            wardNo={identityDetail?.wardNo}
+            toleName={identityDetail?.toleName}
+            profession={identityDetail?.profession}
+            isVerified={identityDetail?.isVerified}
+            isSubmitted={identityDetail?.isSubmitted}
           />
         </div>
       )}

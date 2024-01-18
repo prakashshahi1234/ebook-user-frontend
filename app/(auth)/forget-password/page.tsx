@@ -1,72 +1,121 @@
-// Import your components
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  ChangeEventHandler,
-  FormEvent,
-  ReactComponentElement,
-  useState,
-} from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { Axios } from "@/utils/axios";
+import { toast } from "sonner";
+import Link from "next/link";
+import { cn } from "@/utils/cn";
+
+// Import necessary modules, including the cn utility function
 
 const ForgetPassword = () => {
-  const [email, setEmail] = useState("");
-  const [isValidEmail, setIsValidEmail] = useState(true);
+  const ForgetPasswordValidator = z.object({
+    email: z.string().email({ message: "Please enter a valid email." }),
+  });
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    // Basic email validation
-    setIsValidEmail(e.target.checkValidity());
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(ForgetPasswordValidator),
+  });
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const resetPasswordMutation = useMutation({
+    mutationKey: ["resetPassword"],
+    mutationFn: async ({ email }: TForgetPasswordValidatorType) =>
+      await Axios.post(`/forget-password`, { email }),
+  });
+  const { data, isPending } = resetPasswordMutation;
+  type TForgetPasswordValidatorType = z.infer<typeof ForgetPasswordValidator>;
 
-    // Implement API call here and check response
-    // If successful response, show a success message
-    // If unsuccessful response, handle the error
-
-    // For now, let's log the email for demonstration
-    console.log("Email submitted:", email);
+  const onSubmit: SubmitHandler<TForgetPasswordValidatorType> = async (
+    data
+  ) => {
+    resetPasswordMutation.mutate(data, {
+      onSuccess: () => {
+        toast.success("Password reset link sent successfully.");
+      },
+      onError: (error: any) => {
+        toast.error("Failed to send reset link", {
+          description:
+            error?.response?.data?.message ||
+            "Something went wrong. Please try again.",
+        });
+      },
+    });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="min-w-[320px] max-w-[450px] p-6 border border-gray-300 rounded-md shadow-md">
-        <h3 className="text-xl font-bold mb-4 text-center">Forget Password</h3>
-        <p className="text-muted-foreground mb-2 text-center">
-          Please enter your email. we will send you password reset link.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex flex-col">
-            <Label htmlFor="email" className="mb-1 text-sm">
-              Email
-            </Label>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              onChange={handleEmailChange}
-              required
-              className={`h-10 px-3 border rounded focus:border-gray-400 transition duration-300 ${
-                isValidEmail ? "" : "border-red-500"
-              }`}
-              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
-              title="Enter a valid email address"
-              placeholder="example@gmail.com"
-            />
-            {!isValidEmail && (
-              <small className="text-red-500">Invalid Email</small>
-            )}
+    <div
+      className={cn(
+        "container relative flex pt-20 flex-col items-center justify-center lg:px-0"
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]"
+        )}
+      >
+        <div className={cn("flex flex-col items-center space-y-2 text-center")}>
+          <h1 className={cn("text-2xl font-semibold tracking-tight")}>
+            Forget Password
+          </h1>
+          <Link className={cn("text-blue-500")} href="/login">
+            Remembered your password? Login
+          </Link>
+        </div>
+        {data ? (
+          <div>
+            
+            <p className="text-muted-foreground mb-2 text-center">
+              Check your email. we have sent password reset link.
+            </p>
           </div>
-          <Button
-            type="submit"
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Submit
-          </Button>
-        </form>
+        ) : (
+          <div className={cn("")}>
+            <p className="text-muted-foreground mb-2 text-center">
+              Please enter your email. we will send you password reset link.
+            </p>
+            <form onSubmit={handleSubmit(onSubmit)} className={cn("space-y-4")}>
+              <div className={cn("flex flex-col")}>
+                <Label htmlFor="email" className={cn("mb-1 text-sm")}>
+                  Email
+                </Label>
+                <Input
+                  type="email"
+                  id="email"
+                  {...register("email")}
+                  className={cn(
+                    `h-10 px-3 border rounded focus:border-gray-400 transition duration-300 ${
+                      errors.email ? "border-red-500" : ""
+                    }`
+                  )}
+                  placeholder="example@gmail.com"
+                />
+                {errors.email && (
+                  <small className={cn("text-red-500")}>
+                    {errors.email.message}
+                  </small>
+                )}
+              </div>
+              <Button
+                type="submit"
+                isLoading={isPending}
+                className={cn(
+                  "w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                )}
+              >
+                Submit
+              </Button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

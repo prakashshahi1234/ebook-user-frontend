@@ -1,3 +1,4 @@
+"use client"
 import { AvatarIcon, PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import {
@@ -5,13 +6,16 @@ import {
   Edit2Icon,
   GitGraph,
   LibraryIcon,
+  LogOut,
   PlayIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { sideBarTypes } from "@/types/profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils";
-// ... (previous code)
+import { Axios } from "@/utils/axios";
+import { useQuery } from "@tanstack/react-query";
+import {logout} from '@/services/authentication'
 
 export function SideBar({ profileImage, name, username , searchParams}: sideBarTypes) {
   const router = useRouter();
@@ -19,17 +23,21 @@ export function SideBar({ profileImage, name, username , searchParams}: sideBarT
     "bg-white p-2 m-1 hover:pl-2 w-full text-start flex flex-row justify-start items-center text-muted-foreground hover:bg-black hover:text-white transition-all duration-300";
 
   const isActive = (section: string) => searchParams=== section;
+ 
+
+ 
+
 
   return (
     <div className="w-full border rounded border-gray-300 h-full">
-      <div className="flex fle-row justify-between text-center items-center p-5">
+      <div className="flex fle-row justify-between text-center items-center p-5 w-full">
         <Avatar  className="h-20 w-20">
           <AvatarImage height={300} width={300} src={profileImage} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>{name?name?.toUpperCase()?.split(" ")[0][0] +" "+ name?.toUpperCase()?.split(" ")[1][0]:"Profile"}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col items-center p-2">
+        <div className="flex flex-col items-center p-2 w-full">
           <p className="font-semibold text-lg">{name}</p>
-          <small className="text-gray-500">{username}</small>
+          {/* <small className="text-gray-500">{username}</small> */}
         </div>
       </div>
       <hr className="border-gray-300" />
@@ -104,6 +112,16 @@ export function SideBar({ profileImage, name, username , searchParams}: sideBarT
         >
           <GitGraph className="mr-3 h-4 w-4" />
           <span className="ml-3 text-sm subpixel-antialiased">Analytics</span>
+        </Button>
+        <Button
+          className={cn(buttonStyles, {
+            "bg-black": isActive("analytics"),
+            "text-white": isActive("analytics"),
+          })}
+          onClick={logout}
+        >
+          <LogOut className="mr-3 h-4 w-4" />
+          <span className="ml-3 text-sm subpixel-antialiased">Log out</span>
         </Button>
       </div>
     </div>

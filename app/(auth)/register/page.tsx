@@ -10,19 +10,17 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useQuery ,useMutation, Mutation } from "@tanstack/react-query";
-import { registerWithEmail } from "@/services/authentication";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
 import {cn} from '@/utils/cn'
-import ProfileForm from "@/components/profile/profile-setup/Profile-form";
+
 function Register() {
+  
+
   const registerMutation = useMutation({
-
-    mutationFn: async({email , password , name}:TAuthValidatorType) =>
-
-       await Axios.post(`/register`, {name , email , password}),
-
-  })
+    mutationFn: async ({ email, password, name }: TAuthValidatorType) =>
+      await Axios.post(`/register`, { name, email, password }),
+  });
 
   type TAuthValidatorType = z.infer<typeof AuthCredentialIsvalidator>;
 
@@ -62,7 +60,7 @@ function Register() {
         
         registerMutation.mutate(data, {
           onSuccess: () => {
-            toast.success("Register Successfull.");
+            toast.success("Register Successfull.Verify your email.");
             router.push("/login");
           },
           onError: (error: any) => {
@@ -72,7 +70,6 @@ function Register() {
         });
   
   }
-
 
 
   return (

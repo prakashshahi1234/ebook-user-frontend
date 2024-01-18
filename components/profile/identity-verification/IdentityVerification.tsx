@@ -20,6 +20,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { cn } from "@/utils/cn";
+import { useMutation } from "@tanstack/react-query";
+import { Axios } from "@/utils/axios";
+import { toast } from "sonner";
 
 // Define the schema for the new set of fields
 const formSchema = z.object({
@@ -31,6 +35,8 @@ const formSchema = z.object({
   wardNo: z.string().trim().refine((val) => val !== '', { message: 'Ward No is required' }),
   toleName: z.string().trim().refine((val) => val !== '', { message: 'Tole Name is required' }),
   profession: z.string().trim().refine((val) => val !== '', { message: 'Profession is required' }),
+  isVerified : z.boolean(),
+  isSubmitted:z.boolean(),
 });
 
 
@@ -41,30 +47,47 @@ export function IdentityVerification(data: FormData) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: data.name,
-      country: data.country,
-      province: data.province,
-      district: data.district,
-      municipality: data.municipality,
-      wardNo: data.wardNo,
-      toleName: data.toleName,
-      profession: data.profession,
+      name: data.name || "",
+      country: data.country || "",
+      province: data.province || "",
+      district: data.district ||"",
+      municipality: data.municipality || "",
+      wardNo: data.wardNo || "",
+      toleName: data.toleName || "",
+      profession: data.profession || "",
+      isVerified:data.isVerified || false,
+      isSubmitted:data.isSubmitted || false,
     },
   });
 
   const { formState } = form;
 
+  const identityMutation = useMutation({
+    mutationFn: async(values: FormData) => {
+      return Axios.post("/submit-identity" ,{...values} )
+    }
+  })
+
   function onSubmit(values: FormData) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    identityMutation.mutate(values ,{
+      onSuccess:()=>[
+          alert("Identity submitted successfully")
+      ],
+      onError:()=>{
+     alert("Identity submission failed")
+      
+      }
+    })
   }
+
 
   return (
     <Form {...form}>
+              {data.isSubmitted && <div className="p-3"><p className="text-sm margin-auto w-fit text-blue-500">Your identity is Submitted.It may take 2-4 days to look and verify.</p></div>}
+             {data.isVerified  && <div className="p-3"><p className="text-sm margin-auto w-fit text-green-500">Your identity is verified.</p></div>}
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-6 bg-white rounded-lg shadow-md"
+        className={cn({"pointer-events-none":data.isVerified},"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-6 bg-white rounded-lg shadow-md")}
       >
         {/* First Row */}
         <FormField
@@ -110,14 +133,18 @@ export function IdentityVerification(data: FormData) {
             <FormItem>
               <FormLabel className="text-gray-700">Province</FormLabel>
               <FormControl>
-                <Select>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Province" />
+                    <SelectValue placeholder=" Select Province" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent  defaultValue={field.value}>
                     <SelectItem value="Karnali">Karnali</SelectItem>
-                    <SelectItem value="Gandaki">Gandaki</SelectItem>
                     <SelectItem value="Bagmati">Bagmati</SelectItem>
+                    <SelectItem value="Gandaki">Gandaki</SelectItem>
+                    <SelectItem value="Lumbini">Lumbini</SelectItem>
+                    <SelectItem value="Sudur Paschim">Sudur Paschim</SelectItem>
+                    <SelectItem value="Madhya Pardesh">Madhya Pardesh</SelectItem>
+                    <SelectItem value="Koshi">Koshi</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>

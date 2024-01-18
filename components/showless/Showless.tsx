@@ -1,47 +1,30 @@
 "use client"
-import React, { useState, useRef, useEffect } from 'react';
-import {cn} from '@/utils/cn'; // Adjust the import path based on your project structure
+import React, { useState } from "react";
+import ShowMoreText from "react-show-more-text";
 
-interface HTMLViewerProps {
-  htmlContent: string;
-}
+const ShowLessMore = ({htmlContent}:{htmlContent:string}) => {
+    const [isExpanded, setIsExpanded] = useState(false);
 
-const HTMLViewer: React.FC<HTMLViewerProps> = ({ htmlContent }) => {
-  const [showMore, setShowMore] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
+    const executeOnClick = (expanded:boolean) => {
+        console.log(expanded);
+        setIsExpanded(expanded);
+    };
 
-  useEffect(() => {
-    // Check if the content height exceeds 300px
-    if (contentRef.current) {
-      const contentHeight = contentRef.current.clientHeight;
-      setShowMore(contentHeight > 300);
-    }
-  }, [htmlContent]);
-
-  const toggleShowMore = () => {
-    setShowMore((prevShowMore) => !prevShowMore);
-  };
-
-  return (
-    <div className="relative">
-      <div
-        className={`transition-all duration-300 ${
-          showMore ? 'h-[300px]' : 'max-h-[300px]'
-        } overflow-hidden`}
-        ref={contentRef}
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
-
-      {showMore && (
-        <button
-          className="absolute bottom-0 right-0 px-4 py-2 bg-gray-300 text-gray-700 hover:bg-gray-400 hover:text-gray-800"
-          onClick={toggleShowMore}
+    return (
+        <ShowMoreText
+            lines={5}
+            more="See more"
+            less="Show less"
+            className="text-justify"
+            anchorClass="show-more-less-clickable"
+            onClick={executeOnClick}
+            expanded={isExpanded}
+            width={1000}
+            truncatedEndingComponent={"... "}
         >
-          {showMore ? 'Show Less' : 'Show More'}
-        </button>
-      )}
-    </div>
-  );
+         <div className="text-justify" dangerouslySetInnerHTML={{__html:htmlContent}}></div>
+        </ShowMoreText>
+    );
 };
 
-export default HTMLViewer;
+export default ShowLessMore;

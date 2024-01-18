@@ -9,8 +9,20 @@ import SideBar from "./sidebar";
 import { section } from "@/types/profile";
 import MainSection from "./MainSection";
 import ProfileImage from "@/assets/images/profile.png";
+import { useQuery } from "@tanstack/react-query";
+import { Axios } from "@/utils/axios";
 
 function ResizableBar({ section }:section) {
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["user-data"],
+    queryFn: async () => {
+      const {data} = await Axios.get("/me");
+      return data;
+    },
+  });
+  if (isLoading) return <div>Loading...</div>;
+  const {user} = data;
 
 
   return (
@@ -19,9 +31,9 @@ function ResizableBar({ section }:section) {
         <ResizablePanel minSize={20} defaultSize={20} maxSize={35}>
           <div className="h-full  mx-1 flex items-center justify-center p-2">
             <SideBar   
-               profileImage={"https://media.licdn.com/dms/image/D5603AQH2nhKPN6LApg/profile-displayphoto-shrink_800_800/0/1681317694930?e=2147483647&v=beta&t=ZqWwsky11ZtH4nr71-7Wg2vCPezHVB2LLAk4Ep5JqJg"}
-               name={"Prakash Shahi"}
-               username={"@prakashshahi"}
+               profileImage={user?.profileImage}
+               name={user?.name || ""}
+               username={user?.userId || ""}
                searchParams={section}
             />
           </div>
@@ -31,6 +43,7 @@ function ResizableBar({ section }:section) {
         <ResizablePanel defaultSize={80}>
            <MainSection
             section={section}
+            user={user}
            />
         </ResizablePanel>
       </ResizablePanelGroup>

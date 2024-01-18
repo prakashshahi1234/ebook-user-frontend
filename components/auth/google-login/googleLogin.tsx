@@ -1,12 +1,36 @@
+'use client'
 import { useGoogleLogin } from "@react-oauth/google";
 import googleLogoImage from "@/assets/images/google-logo.png"; 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-const GoogleLoginButton = () => {
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
-  });
+import { useMutation } from "@tanstack/react-query";
+import { Axios } from "@/utils/axios";
+import {toast} from 'sonner'
+import { useRouter } from "next/navigation";
 
+
+const GoogleLoginButton = () => {
+  const router = useRouter()
+  const registerMutation = useMutation({
+    mutationFn: async (response:{access_token:string}) =>
+      await Axios.post(`/google-auth`, {token:response.access_token}),
+  });
+  
+  const login = useGoogleLogin({
+    onSuccess: async(tokenResponse) => {
+        console.log(tokenResponse)
+        registerMutation.mutate(tokenResponse,{
+          onSuccess: () => {
+            toast.success("Login Successfull.");
+            router.push("/");
+          },
+          onError: (error: any) => {
+            toast.error("Login Failed" , {description:error?.response?.data?.message ||"Something went wrong.Please try again."});
+          },
+        })
+    },
+  });
+  
   return (
     <Button
     onClick={() => login()}

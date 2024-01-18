@@ -9,31 +9,39 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import {Axios} from "@/utils/axios";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
+
 
 const formSchema = z.object({
-  username: z.string().min(5, {
+  userId: z.string().min(5, {
     message: "Username must be at least 5 characters.",
   }),
   name: z.string().regex(/^[A-Za-z][A-Za-z\s]*[A-Za-z]$/, "Invalid name"),
   email: z.string().email("Invalid email address"),
   email_verified: z.string(),
-  socialLink: z.array(z.string()),
+  socialLink: z.string(),
   description: z.string().max(200, "200 character maximum."),
   isSuspended: z.string().readonly(),
-});
+})
 
 type FormData = z.infer<typeof formSchema>;
 
 export function ProfileForm(data: FormData) {
+  const router = useRouter();
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: data.username,
+      userId: data.userId,
       name: data.name,
       email: data.email,
       email_verified: data.email_verified,
@@ -43,11 +51,21 @@ export function ProfileForm(data: FormData) {
     },
   });
 
+  const profileMutation = useMutation({
+    mutationFn: async ({ userId , name ,socialLink ,description , isSuspended } :FormData) =>
+      await Axios.post(`/update-user`, {userId , name ,socialLink ,description}),
+  });  
   const { formState } = form;
+  const { isPending } = profileMutation;
   function onSubmit(values: FormData) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    profileMutation.mutate(values, {
+      onSuccess: () => {
+        alert("saved..")
+      },
+      onError: (error: any) => {
+        alert("error")
+      },
+    });
   }
 
   return (
@@ -59,16 +77,17 @@ export function ProfileForm(data: FormData) {
         {/* First Row */}
         <FormField
           control={form.control}
-          name="username"
+          name="userId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-gray-700">Username</FormLabel>
+              <FormLabel className="text-gray-700">UserId</FormLabel>
               <FormControl>
                 <Input
                   placeholder="shadcn"
                   {...field}
-                  className="p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                />
+                  className="p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-green-500"
+                 readOnly
+               />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -186,6 +205,7 @@ export function ProfileForm(data: FormData) {
         />
         {formState.isDirty && (
           <Button
+            isLoading={isPending}
             type="submit"
             className="col-span-full bg-black text-white py-3 rounded-md hover:bg-green-600 transition duration-300"
           >

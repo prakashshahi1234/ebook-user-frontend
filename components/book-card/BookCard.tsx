@@ -3,7 +3,6 @@ import Image from "next/image";
 import { StarIcon } from "@radix-ui/react-icons";
 import { Star } from "lucide-react";
 import Link from "next/link";
-
 interface Props {
   title: string;
   coverImage: string;
