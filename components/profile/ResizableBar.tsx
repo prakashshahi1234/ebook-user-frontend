@@ -31,7 +31,7 @@ function ResizableBar({ section }:section) {
         <ResizablePanel minSize={20} defaultSize={20} maxSize={35}>
           <div className="h-full  mx-1 flex items-center justify-center p-2">
             <SideBar   
-               profileImage={user?.profileImage}
+               profileImageUrl={user?.profileImageUrl}
                name={user?.name || ""}
                username={user?.userId || ""}
                searchParams={section}

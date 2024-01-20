@@ -6,7 +6,7 @@ const nextConfig = {
            return config;
          },
          images: {
-          domains: ['localhost'],
+          domains: ['localhost' ,"ebook-nepal-1.s3.ap-south-1.amazonaws.com"],
         },
 }
 

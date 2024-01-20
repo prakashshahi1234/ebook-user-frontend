@@ -6,6 +6,7 @@ import IdentityVerification from "./identity-verification/IdentityVerification";
 import PaymentSetupForm from "./payment-setup/PaymentSetup";
 import { useQuery } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
+import Library from "./library/library";
 
 function MainSection({ section , user}:any) {
 
@@ -33,18 +34,7 @@ const {identityDetail} = user;
 
       {section === "books" && (
         <div className="w-full m-auto">
-          <Tabs defaultValue="create-book" className="">
-            <TabsList>
-              <TabsTrigger value="create-book">Create Book</TabsTrigger>
-              <TabsTrigger value="password">All Books</TabsTrigger>
-            </TabsList>
-            <TabsContent value="create-book">
-              <BookForm />
-            </TabsContent>
-            <TabsContent value="password">
-              Change your password here.
-            </TabsContent>
-          </Tabs>
+              <BookForm />           
         </div>
       )}
 
@@ -73,6 +63,11 @@ const {identityDetail} = user;
             accountHolderName=""
             accountNumber=""
           />
+        </div>
+      )}
+      {section === "library" && (
+        <div className="w-full m-auto">
+          <Library/>
         </div>
       )}
     </div>

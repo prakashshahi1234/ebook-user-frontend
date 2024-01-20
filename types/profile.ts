@@ -3,7 +3,7 @@ export type section = {
 }
 
 export interface sideBarTypes {
-   profileImage?:string,
+   profileImageUrl?:string,
    name?:string,
    username?:string
    searchParams: string  | null 

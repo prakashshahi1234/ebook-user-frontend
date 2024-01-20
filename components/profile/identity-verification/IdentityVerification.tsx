@@ -83,7 +83,7 @@ export function IdentityVerification(data: FormData) {
 
   return (
     <Form {...form}>
-              {data.isSubmitted && <div className="p-3"><p className="text-sm margin-auto w-fit text-blue-500">Your identity is Submitted.It may take 2-4 days to look and verify.</p></div>}
+              {data.isSubmitted && !data.isVerified && <div className="p-3"><p className="text-sm margin-auto w-fit text-blue-500">Your identity is Submitted.It may take 2-4 days to look and verify.</p></div>}
              {data.isVerified  && <div className="p-3"><p className="text-sm margin-auto w-fit text-green-500">Your identity is verified.</p></div>}
       <form
         onSubmit={form.handleSubmit(onSubmit)}

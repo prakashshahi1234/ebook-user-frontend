@@ -2,22 +2,22 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export const formSchema = z.object({
-    title: z.string().regex(/^[a-zA-Z0-9\s]+$/, "Invalid Title."),
+    title: z.string().regex(/^[a-zA-Z0-9\s]+$/, "invalid title you can use only alphanumeric character."),
     author: z.string().min(1, "Author is required."),
-    pdfFile: z.string().url("Invalid PDF file URL"), // Assuming a URL for PDF file upload
-    coverImage: z.string().url("Invalid Cover Image URL"), // Assuming a URL for image file upload
-    description: z.object({}),
-    keywords: z.string().min(1, "Keywords are required."),
+    url: z.string().min(1,"Upload Pdf File."), // Assuming a URL for PDF file upload
+    coverImageUrl: z.string().url("invalid cover image URL"), // Assuming a URL for image file upload
+    description: z.string().min(1,"description is required.").max(2000 , "maximum 4000 character."),
+    keywords: z.string().min(1, "keywords are required."),
     category: z
       .string()
       .refine(
         (val) =>
           [
-            "Fiction",
-            "Non-Fiction",
-            "Science Fiction",
-            "Mystery",
-            "Romance",
+            "fiction",
+            "non-fiction",
+            "science-fiction",
+            "mystery",
+            "romance",
           ].includes(val),
         {
           message: "Invalid category",
