@@ -26,35 +26,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/utils/cn";
 import { useMutation } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
-export function BookForm() {
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
+export function BookForm() {
+  const [editorValue, setEditorValue] = useState("");
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       price: 0,
-      // description:{man: "hello"},
       url: "",
       coverImageUrl: "",
     },
   });
   const submitBookMutation = useMutation({
-    mutationFn: async(data: FormData) => {
-      return await Axios.post("/create-book",{...data})
-    }
-  })
+    mutationFn: async (data: FormData) => {
+      return await Axios.post("/create-book", { ...data });
+    },
+  });
   function onSubmit(values: FormData) {
-     submitBookMutation.mutate(values ,{
-      onSuccess:(result)=>{
-        alert("Book created successfully")
-        form.reset()
+    submitBookMutation.mutate(values, {
+      onSuccess: (result) => {
+        alert("Book created successfully");
+        form.reset();
       },
-      onError:(error)=>{
-        alert("Error creating book")
-        console.log(error)
-        
-      }
-     })
+      onError: (error) => {
+        alert("Error creating book");
+        console.log(error);
+      },
+    });
   }
 
   const { setValue, getValues, formState, watch } = form;
@@ -72,7 +73,7 @@ export function BookForm() {
         ? `/${parts.slice(index, index + 4).join("/")}`
         : "Pattern not found in the URL";
 
-    setValue("url", key);
+    setValue("url", key.slice(1));
   };
 
   const getCoverImageUrlFromUploader = (data: string) =>
@@ -233,10 +234,10 @@ export function BookForm() {
                 <FormItem className="col-span-full">
                   <FormLabel className="text-gray-700">Description</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <ReactQuill
                       {...field}
-                      placeholder="Enter Description"
-                      className={inputFieldStyle}
+                      theme="snow"
+                      className={cn(inputFieldStyle)}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500" />
@@ -249,9 +250,16 @@ export function BookForm() {
               name="url"
               render={({ field }) => (
                 <FormItem className="">
-                  <FormLabel className="text-gray-700">Description</FormLabel>
+                  <FormLabel className="text-gray-700">Book Url</FormLabel>
                   <FormControl>
-                    <Input {...field} className={inputFieldStyle} readOnly />
+                    <Input
+                      {...field}
+                      className={cn(
+                        inputFieldStyle,
+                        "border-green-500 , text-green-600"
+                      )}
+                      readOnly
+                    />
                   </FormControl>
                   <FormMessage className="text-red-500" />
                 </FormItem>
@@ -265,7 +273,14 @@ export function BookForm() {
                 <FormItem className="">
                   <FormLabel className="text-gray-700">Book Cover</FormLabel>
                   <FormControl>
-                    <Input {...field} className={inputFieldStyle} readOnly />
+                    <Input
+                      {...field}
+                      className={cn(
+                        inputFieldStyle,
+                        "border-green-500 , text-green-600"
+                      )}
+                      readOnly
+                    />
                   </FormControl>
                   <FormMessage className="text-red-500" />
                 </FormItem>

@@ -2,6 +2,8 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export const formSchema = z.object({
+    bookId: z.string().optional(),
+    id:z.string().optional(),
     title: z.string().regex(/^[a-zA-Z0-9\s]+$/, "invalid title you can use only alphanumeric character."),
     author: z.string().min(1, "Author is required."),
     url: z.string().min(1,"Upload Pdf File."), // Assuming a URL for PDF file upload

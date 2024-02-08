@@ -62,7 +62,7 @@ export function SideBar({
             src={profileImageUrl}
           />
             <Dialog >
-              <DialogTrigger className="flex flex-col items-center justify-center w-5">
+              <DialogTrigger className=" absolute bottom-0 left-1/2 flex flex-col items-center justify-center  w-fit h-fit text-white">
                 {" "}
                 <AvatarFallback>
                     ....

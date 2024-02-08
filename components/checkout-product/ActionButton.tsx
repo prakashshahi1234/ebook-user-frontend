@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 
 
 const ActionButton = () => {
-  const cartId = localStorage.getItem("cartId");
+
+  const cartId =typeof window!=="undefined" && localStorage?.getItem("cartId");
   const router  =useRouter();
   const buy = () =>{router.push(`/checkout/${cartId}`)}
+
   return (
     <>
       <Button

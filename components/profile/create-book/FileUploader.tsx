@@ -70,8 +70,7 @@ const FileUploader = ({
   };
 
   const uploadToS3 = useMutation({
-    mutationFn: async (data: uploadData) => {
-  
+    mutationFn: async (data: uploadData) => {  
 
        await axios.put(data.url, data.file, {
         headers: {

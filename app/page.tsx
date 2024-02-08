@@ -1,60 +1,32 @@
-"use client"
 import BookCard from "@/components/book-card/BookCard";
+import { BookType } from "@/types/producTypes";
+import { Axios } from "@/utils/axios";
+import PDFViewer from "@/components/pdfview/PdfViewer";
+export default async function Home() {
+  const query = await Axios.post("/get-books");
+  const books = query.data.books;
 
-export default function Home() {
-  // const accessToken = cookies().get('accessToken')
-  // console.log(accessToken)
-  localStorage.setItem("cartId" ,"hello")
-  return(
-    <main className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 min-h-screen items-center justify-center p-4">      
-      <BookCard         
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
+  if (!books) return <div>Having problem in load books.</div>;
+  return (
+    <main className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 min-h-screen items-center justify-center p-4">
+      {books.map((book: BookType, index: number) => (
+        <BookCard
+          bookId={book.bookId}
+          key={index}
+          title={book.title}
+          // @ts-ignore
+          author={book.author}
+          _id={book._id}
+          price={book.price}
+          // @ts-ignore
+          publishedAt={new Date(book?.createdAt).toDateString()}
+          coverImage={book.coverImageUrl}
+          rating={{ value: 0, total: 0 }}
         />
-         <BookCard
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
-        />
-         <BookCard
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
-        />
-         <BookCard
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
-        />
-         <BookCard
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
-        />
-         <BookCard
-          title="Rich Dad Poor Dad"
-          author="Robert T. Kiyosaki"
-          price={200}
-          publishedAt="2022-01-01"
-          coverImage="http://localhost:3000/cover.jpeg"
-          rating={{value:4.5 , total:4500}}
-        />
+      ))}
+     
+
+    
     </main>
-  )
+  );
 }

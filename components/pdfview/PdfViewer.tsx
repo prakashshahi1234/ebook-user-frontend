@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
@@ -65,7 +66,7 @@ function MyApp() {
         />
       </div>
       <Document
-        file="http://localhost:3000/3.pdf"
+        file="https://ebook-nepal-1.s3.ap-south-1.amazonaws.com/all-books/7feff91a-8ddf-44d3-8e1c-1c995548c848/1706453120664/pdf-1706453120664.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAYWIBY2JWWBXUAQND%2F20240128%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20240128T144642Z&X-Amz-Expires=3600&X-Amz-Signature=e427ef626a59f5f91f3a9ccb20351c8aff5219f4c9a94f760efbc780b70d7ac4&X-Amz-SignedHeaders=host&x-id=GetObject"
         onLoadSuccess={onDocumentLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
@@ -80,22 +81,7 @@ function MyApp() {
           />
         ))}
       </Document>
-      <Document
-        file="http://localhost:3000/3.pdf"
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
-        {Array.from(new Array(numPages), (el, index) => (
-          <Page
-            key={`page_${index + 1}`}
-            scale={scale}
-            className={cn(
-              "m-auto mb-2 w-fit shadow-sm p-4 bg-white rounded-md",
-              "border border-gray-400 bg-red-300 rounded"
-            )}
-            pageNumber={index + 1}
-          />
-        ))}
-      </Document>
+     
     </div>
   );
 }

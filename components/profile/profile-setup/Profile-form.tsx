@@ -19,7 +19,8 @@ import { useMutation } from "@tanstack/react-query";
 import {Axios} from "@/utils/axios";
 import {useRouter} from "next/navigation";
 import {toast} from "sonner";
-
+import { revalidatePath } from "next/cache";
+import action from "@/app/action";
 
 const formSchema = z.object({
   userId: z.string().min(5, {
@@ -62,9 +63,10 @@ export function ProfileForm(data: FormData) {
     profileMutation.mutate(values, {
       onSuccess: () => {
         alert("saved..")
+        // action()
       },
       onError: (error: any) => {
-        alert("error")
+        alert(error.message)
       },
     });
   }

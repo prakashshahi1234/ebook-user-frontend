@@ -20,16 +20,23 @@ import {
 import { FileHeart, LibraryIcon } from "lucide-react";
 import ShowLessMore from "@/components/showless/Showless";
 import ActionButton from "@/components/checkout-product/ActionButton";
+import { BookType } from "@/types/producTypes";
+
 async function page({ params }: { params: { bookId: string } }) {
+
   const bookId = params.bookId;
-  // Let's assume you fetch book details from an API here.
+  const query = await Axios.get(`/get-book/${bookId}`);
+  const book:BookType = query.data.book;
 
   // Placeholder data for testing
-  const title = "Rich dad poor dad";
-  const coverImage = "http://localhost:3000/cover.jpeg";
-  const rating = { value: 4.5, total: 1000 };
-  const description = "<h1>Hello this is description</h1>";
-  const price = 200;
+  const title = book.title;
+  const coverImage =book.coverImageUrl;
+  const rating = { value: 0, total: 0 };
+  const description =book.description;
+  const price = book.price;
+  const author =book.author;
+  const publishedAt =new Date(book.createdAt).toDateString();
+   console.log(description)
   const contentList = [
     { chapter: 1, title: "How to get debt from financials.", pageNo: 1 },
     { chapter: 2, title: "How to get debt from financials.", pageNo: 1 },
@@ -37,38 +44,25 @@ async function page({ params }: { params: { bookId: string } }) {
     { chapter: 4, title: "How to get debt from financials.", pageNo: 1 },
     { chapter: 5, title: "How to get debt from financials.", pageNo: 1 },
   ];
-  const author = "Prakash Shahi";
-  const publishedAt = "2023-01-01";
 
-  // Function to generate dummy description
-  const generateDummyDescription = () => {
-    const paragraphs = Array.from(
-      { length: 11 },
-      (_, index) =>
-        `<p key=${index} class="m-3 text-sm text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut libero in risus sodales auctor. Donec blandit volutpat lacus vel ultrices. Ut sit amet justo eu orci aliquam dapibus ac eu risus.</p>`
-    );
-    return paragraphs.join("");
-  };
 
-  // Assign dummy description to the actual description
-  const generatedDescription = generateDummyDescription();
-
+  
   return (
     <>
       <section className="text-gray-700 body-font overflow-hidden bg-gray-100">
         <div className="container px-5 py-4 mx-auto">
           <div className="lg:w-4.5/5 mx-auto flex flex-row top-10 flex-start flex-wrap-reverse items-end justify-center bg-white p-8 rounded-lg shadow-md">
             <Image
-              alt={title}
+              alt={title || ""}
               width={350}
               height={500}
               className="lg:w-2/6 sm:w-full sm:mt-3 h-fit object-cover object-center rounded border border-gray-300 sticky top-10"
-              src="http://localhost:3000/cover.jpeg"
+              src={coverImage}
             />
 
             <div className="lg:w-4/6 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0 relative">
               <small className="text-sm title-font text-gray-500 tracking-widest">
-                By {author}
+                By {author.name}
               </small>
               <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
                 {title}
@@ -85,7 +79,7 @@ async function page({ params }: { params: { bookId: string } }) {
                 </span>
               </div>
 
-              <Accordion type="single" collapsible>
+              {/* <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                   <AccordionTrigger>View Content</AccordionTrigger>
                   {contentList.map((item, index) => (
@@ -94,9 +88,9 @@ async function page({ params }: { params: { bookId: string } }) {
                     </AccordionContent>
                   ))}
                 </AccordionItem>
-              </Accordion>
+              </Accordion> */}
 
-              <ShowLessMore htmlContent={generatedDescription} />
+              <div className="description"  dangerouslySetInnerHTML={{__html:description}}></div>
 
               <div className="flex flex-wrap justify-start mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
                 <div className="flex">

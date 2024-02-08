@@ -39,10 +39,12 @@ function Login() {
     resolver: zodResolver(AuthCredentialIsvalidator),
   });
 
-  const onSubmit: SubmitHandler<TAuthValidatorType> = async (data) => {
+  const onSubmit: SubmitHandler<TAuthValidatorType> = async (data , event) => {
+    event?.preventDefault();
      
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (result) => {
+        localStorage.setItem("user", JSON.stringify(result.data.user));
         toast.success("Login Successfull.");
         router.push("/");
       },
