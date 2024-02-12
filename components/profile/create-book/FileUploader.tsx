@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
 import { File } from "buffer";
 import axios from "axios";
+import { toast } from "sonner";
 
 const FileUploader = ({
   maxSize,
@@ -93,16 +94,16 @@ const FileUploader = ({
 
         uploadToS3.mutate(obj, {
           onSuccess: () => {
-            alert("uploaded successfully");
+            toast.success("uploaded successfully");
             sendUrl(result.data.url);
           },
           onError: (error) => {
-            console.log(error);
+            toast.error(error.message);
           },
         });
       },
       onError: (error) => {
-        console.log(error);
+        toast.error(error.message);
       },
     });
   };

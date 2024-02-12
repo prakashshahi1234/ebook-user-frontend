@@ -1,61 +1,66 @@
+.description > * {
+    text-align: justify;
+}
+
 .description {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
     color: #333;
+    font-size: 14px; /* Updated text size */
 }
 
 /* Paragraph */
 .description p {
-    font-size: 16px;
-    margin-bottom: 15px;
+    font-size: 12px; /* Updated text size */
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 1 */
 .description h1 {
-    font-size: 28px;
+    font-size: 17px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 2 */
 .description h2 {
-    font-size: 26px;
+    font-size: 16px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 3 */
 .description h3 {
-    font-size: 24px;
+    font-size: 14px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 4 */
 .description h4 {
-    font-size: 22px;
+    font-size: 15px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 5 */
 .description h5 {
-    font-size: 20px;
+    font-size: 14px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Heading 6 */
 .description h6 {
-    font-size: 18px;
+    font-size: 12px; /* Updated text size */
     font-weight: 700;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 
 /* Links */
@@ -72,12 +77,12 @@
 /* Lists */
 .description ul,
 .description ol {
-    margin-bottom: 15px;
-    padding-left: 20px;
+    margin-bottom: 10px; /* Reduced margin */
+    padding-left: 15px; /* Reduced padding */
 }
 
 .description li {
-    font-size: 16px;
+    font-size: 12px; /* Updated text size */
     margin-bottom: 5px;
 }
 
@@ -95,31 +100,31 @@
 .product-detail {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
-    padding: 20px;
-    margin-top: 20px;
+    padding: 15px; /* Reduced padding */
+    margin-top: 15px; /* Reduced margin */
 }
 
 .product-image {
     max-width: 100%;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced margin */
 }
 
 .product-price {
-    font-size: 20px;
+    font-size: 18px; /* Updated text size */
     color: #e44d26;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reduced margin */
 }
 
 .product-description {
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 14px; /* Updated text size */
+    margin-bottom: 15px; /* Reduced margin */
 }
 
 
 @media only screen and (max-width: 768px) {
     .description {
-        font-size: 14px;
+        font-size: 12px; /* Updated text size */
     }
 
     /* Adjust other styles as needed */
@@ -128,7 +133,7 @@
 /* Media Query for Mobile Devices */
 @media only screen and (max-width: 480px) {
     .description {
-        font-size: 12px;
+        font-size: 10px; /* Updated text size */
     }
 
     /* Adjust other styles as needed */

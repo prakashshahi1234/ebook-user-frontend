@@ -28,6 +28,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { toast } from "sonner";
 
 export function BookForm() {
   const [editorValue, setEditorValue] = useState("");
@@ -48,16 +49,16 @@ export function BookForm() {
   function onSubmit(values: FormData) {
     submitBookMutation.mutate(values, {
       onSuccess: (result) => {
-        alert("Book created successfully");
+        toast.success("Book created successfully");
         form.reset();
       },
       onError: (error) => {
-        alert("Error creating book");
+        toast.error("Error creating book");
         console.log(error);
       },
     });
   }
-
+  const {isPending }=submitBookMutation
   const { setValue, getValues, formState, watch } = form;
 
   const getBookUrlFromUploader = (data: string) => {
@@ -288,6 +289,7 @@ export function BookForm() {
             />
 
             <Button
+              isLoading={isPending}
               type="submit"
               className="col-span-full bg-black text-white py-3 rounded-md hover:bg-green-600 transition duration-300 mt-10 "
             >

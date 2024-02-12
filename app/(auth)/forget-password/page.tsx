@@ -10,10 +10,12 @@ import { Axios } from "@/utils/axios";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/utils/cn";
+import { ReactNode } from "react";
 
 // Import necessary modules, including the cn utility function
 
 const ForgetPassword = () => {
+
   const ForgetPasswordValidator = z.object({
     email: z.string().email({ message: "Please enter a valid email." }),
   });
@@ -82,13 +84,14 @@ const ForgetPassword = () => {
             <p className="text-muted-foreground mb-2 text-center">
               Please enter your email. we will send you password reset link.
             </p>
+              {/* @ts-ignore */}
             <form onSubmit={handleSubmit(onSubmit)} className={cn("space-y-4")}>
               <div className={cn("flex flex-col")}>
                 <Label htmlFor="email" className={cn("mb-1 text-sm")}>
                   Email
                 </Label>
                 <Input
-                  type="email"
+                  
                   id="email"
                   {...register("email")}
                   className={cn(
@@ -100,7 +103,7 @@ const ForgetPassword = () => {
                 />
                 {errors.email && (
                   <small className={cn("text-red-500")}>
-                    {errors.email.message}
+                    {errors.email.message as ReactNode}
                   </small>
                 )}
               </div>

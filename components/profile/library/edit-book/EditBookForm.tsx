@@ -29,6 +29,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Axios } from "@/utils/axios";
 import { DialogTrigger } from "@/components/ui/dialog";
 import ReactQuill from "react-quill";
+import { toast } from "sonner";
 export function BookForm({
   book,
   DialogueClose,
@@ -55,10 +56,10 @@ export function BookForm({
   function onSubmit(values: BookSchemaType) {
     submitBookMutation.mutate(values, {
       onSuccess: (result) => {
-        alert("Book Updated successfully");
+        toast.success("Book Updated successfully");
       },
       onError: (error) => {
-        alert("Error Updating book");
+        toast.error("Error Updating book"+ error.message);
         console.log(error);
       },
     });

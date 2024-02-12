@@ -16,22 +16,28 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { Axios } from "@/utils/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
+import {Toaster , toast} from 'sonner'
+import { cn } from "@/utils/cn";
 // Define the schema for the PaymentSetup fields
 const formSchema = z.object({
   bankName: z.string().trim().refine((val) => val !== '', { message: 'Bank Name is required' }),
   branch: z.string().trim().refine((val) => val !== '', { message: 'Branch is required' }),
   accountHolderName: z.string().trim().refine((val) => val !== '', { message: 'Account Holder Name is required' }),
   accountNumber: z.string().trim().refine((val) => val !== '', { message: 'Account Number is required' }),
+  isVerified:z.boolean().optional(),
+  isSubmitted:z.boolean().optional()
 });
 
 type PaymentSetupFormData = z.infer<typeof formSchema>;
 
 // Define the form component
 export function PaymentSetupForm(data: PaymentSetupFormData) {
+      console.log(data)
   const form = useForm<PaymentSetupFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,19 +48,49 @@ export function PaymentSetupForm(data: PaymentSetupFormData) {
     },
   });
 
+  // "
+
   const { formState } = form;
+  const paymentMutation = useMutation({
+    mutationKey:['submit-payment'],
+    mutationFn:async(data:PaymentSetupFormData)=>{
+      return (await Axios.post("/submit-payment-details", data)).data
+    }
+  })
 
   function onSubmit(values: PaymentSetupFormData) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  
+     paymentMutation.mutate(values,{
+      onSuccess:()=>{
+       toast.success("Added")
+      },
+      onError:(error)=>{
+        toast.error("error!.., you can submit after your identity is verified.")
+      }
+     })
   }
 
   return (
     <Form {...form}>
+     
+     {(data.isSubmitted && !data.isVerified) && (
+        <div className="p-3">
+          <p className="text-sm margin-auto w-fit text-blue-500">
+            Your bank details are Submitted.It may take 2-4 days to look and
+            verify.
+          </p>
+        </div>
+      )}
+       {data.isVerified && (
+            <div className="p-3">
+              <p className="text-sm margin-auto w-fit text-green-500">
+                Your bank details are verified.
+              </p>
+            </div>
+          )}
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-6 bg-white rounded-lg shadow-md"
+        className={cn({'pointer-events-none':data.isVerified},"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-6 bg-white rounded-lg shadow-md")}
       >
         {/* First Row */}
         <FormField

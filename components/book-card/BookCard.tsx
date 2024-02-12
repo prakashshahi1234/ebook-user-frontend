@@ -6,7 +6,7 @@ import Link from "next/link";
 import { truncateString } from "@/utils/shortPara";
 interface Props {
   title: string;
-  coverImage: string;
+  coverImageUrl: string;
   author: {name:string , _id:string};
   rating: {
     value: number;
@@ -22,7 +22,7 @@ type PropsWithStyles = Props & React.HTMLAttributes<HTMLDivElement>;
 
 const BookCard: React.FC<PropsWithStyles> = ({
   title,
-  coverImage,
+  coverImageUrl,
   author,
   rating,
   price,
@@ -32,28 +32,29 @@ const BookCard: React.FC<PropsWithStyles> = ({
 }: PropsWithStyles) => {
   return (
 
-    <Link href={`/book/${bookId}`} className="flex-shrink-0 bg-white rounded shadow-lg hover:border border-gray-300 max-w-[400px] w-full m-2">    
+    <Link href={`/book/${_id}`} className="flex-shrink-0 bg-white rounded shadow-lg hover:border border-gray-300 max-w-[400px] w-full m-2 justify-end items-end">    
       <div className={`p-2 m-2`}>    
         <Image
-        src={coverImage}
+        src={coverImageUrl}
         alt={title}
         height={400}
         width={250}
-        className="object-cover w-full rounded-md mb-4"
+        className="object-cover w-full rounded-md mb-4 max-h-[250px]"
 
       />
-      <p className="text-lg font-semibold mb- text-justify break-all">{truncateString(title,49 ,30)}</p>
-      <p className="text-gray-600 mb-2 text-sm">By {author?.name}</p>
+      <p className="text-base font-medium mb- text-justify break-all">{truncateString(title,49 ,30)}</p>
+     {author.name && <p className="text-gray-600 mb-2 text-sm">By {author?.name}</p>}
       <div className="flex flex-col items-start justify-between mb-2">
-      <p className="text-lg font-bold text-green-600 mb-2">{"Rs. "}{price}</p>
+      {price && <p className="text-lg font-bold text-green-600 mb-2">{"Rs. "}{price}</p>}
 
-        <div className=" flex flex-row items-center text-gray-700 text-sm text-yellow">
+     {/* {rating.total &&  
+      <div className=" flex flex-row items-center text-gray-700 text-sm text-yellow">
         <Star className="w-5 h-5 text-yellow-500 mr-1" />
 
           {rating.value} - {rating.total}
-        </div>
+        </div>} */}
       </div>
-      <p className="text-gray-500">Published: {publishedAt}</p>
+   {publishedAt &&   <p className="text-gray-500">Published: {publishedAt}</p>}
     </div>
     </Link>
   );

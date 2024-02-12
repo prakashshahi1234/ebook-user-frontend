@@ -3,6 +3,7 @@ import { AvatarIcon, PersonIcon, UploadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import {
   BookIcon,
+  BookUserIcon,
   Edit2Icon,
   GitGraph,
   LibraryIcon,
@@ -15,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Axios } from "@/utils/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { logout } from "@/services/authentication";
+
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import FileUploader from "./create-book/FileUploader";
+import { SheetTrigger } from "../ui/sheet";
+import { toast } from "sonner";
 
 export function SideBar({
   profileImageUrl,
@@ -33,6 +36,7 @@ export function SideBar({
   searchParams,
 }: sideBarTypes) {
   const router = useRouter();
+
   const buttonStyles =
     "bg-white p-2 m-1 hover:pl-2 w-full text-start flex flex-row justify-start items-center text-muted-foreground hover:bg-black hover:text-white transition-all duration-300";
 
@@ -44,30 +48,37 @@ export function SideBar({
       const profileImageUrl = url.split("?")[0];
       updateUserMutation.mutate(profileImageUrl ,{
         onSuccess: () => {
-           alert("uploaded")
+           toast.success("uploaded")
         }
         ,
         onError:(error)=>{
-             alert(error.message)
+             toast.error(error.message)
   }})
   };
+
+  const logout =  async() => {
+    await Axios.get("/logout")
+    window.location.href = "/login"
+    localStorage.removeItem("cart-storage")
+  }
+
+
   return (
     <div className="w-full border rounded border-gray-300 h-full">
       <div className="flex fle-row justify-between text-center items-center p-5 w-full">
         <Avatar className="h-20 w-20 border border-black">
-          <AvatarImage
+        
+            <Dialog >
+              <DialogTrigger className="flex flex-col items-center justify-center  w-fit h-fit text-white">
+              <AvatarImage
             className="text-gray-400"
             height={300}
             width={300}
             src={profileImageUrl}
-          />
-            <Dialog >
-              <DialogTrigger className=" absolute bottom-0 left-1/2 flex flex-col items-center justify-center  w-fit h-fit text-white">
-                {" "}
-                <AvatarFallback>
-                    ....
-                </AvatarFallback>
-                <UploadIcon className="" />
+             />
+             <AvatarFallback>
+                  <Button className="h-full w-full rounded-sm">Upload</Button>
+             </AvatarFallback>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -129,7 +140,7 @@ export function SideBar({
         >
           <PlayIcon className="mr-3 h-4 w-4" />
           <span className="ml-3 text-sm subpixel-antialiased">
-            Payment Setup
+            Bank Details
           </span>
         </Button>
 
@@ -141,7 +152,7 @@ export function SideBar({
           onClick={() => router.push("?section=books")}
         >
           <BookIcon className="mr-3 h-4 w-4" />
-          <span className="ml-3 text-sm subpixel-antialiased">Your Books</span>
+          <span className="ml-3 text-sm subpixel-antialiased">Create Book</span>
         </Button>
 
         <Button
@@ -152,7 +163,18 @@ export function SideBar({
           onClick={() => router.push("?section=library")}
         >
           <LibraryIcon className="mr-3 h-4 w-4" />
-          <span className="ml-3 text-sm subpixel-antialiased">Library</span>
+          <span className="ml-3 text-sm subpixel-antialiased">Your Books</span>
+        </Button>
+
+        <Button
+          className={cn(buttonStyles, {
+            "bg-black": isActive("your-purchased"),
+            "text-white": isActive("your-purchased"),
+          })}
+          onClick={() => router.push("?section=your-purchased")}
+        >
+          <BookUserIcon className="mr-3 h-4 w-4" />
+          <span className="ml-3 text-sm subpixel-antialiased">Your Purchased</span>
         </Button>
 
         <Button

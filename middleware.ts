@@ -44,11 +44,12 @@ export  function middleware(request: NextRequest, event: NextFetchEvent) {
   }
 
   // if user is not looged in.
-  if(pathname.startsWith("/user")){
+  if(pathname.startsWith("/user") || pathname.startsWith("/checkout")){
   if(!accessToken && !refreshToken){
      return NextResponse.redirect(new URL("/login", request.url));  
   }
   }
+
 
 }
 

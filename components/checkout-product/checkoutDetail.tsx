@@ -1,28 +1,61 @@
 "use client"
-import React from 'react'
-
+import React, { useState } from 'react'
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from '../ui/button';
+import { useCart } from '@/hooks/useCart';
+import { useMutation } from '@tanstack/react-query';
+import { Axios } from '@/utils/axios';
+import { EsewaPayment, submitEsewaPayment } from '@/utils/esewa';
 
-interface TableData {
-    cartArray: {
-      title: string;
-      price: number;
-      cover: string;
-      bookId: string;
-    }[];
-  }
+
+function CheckoutDetail() {
   
-  interface CheckOutTableProps {
-    cartArray: TableData["cartArray"];
-  }
+   
+    const {books} = useCart()
+
+    const totalPrice = books.reduce((acc, curr) => acc + curr.price, 0);
+    const [transactionUuid, setUuid] = useState(null);
+    const [signature, setSignature] = useState(null);
+    const [khaltiPaymentUrl, setKhaltiPayUrl] = useState(null);
+
+    const purchaseMutation = useMutation({
+      mutationKey: ["purchase"],
+      mutationFn: async (data: string) => {
+        return (await Axios.get(`/purchase/${data}`)).data;
+      },
+    });
+  
+    const purchase = (paymentMethod: string) => {
+      purchaseMutation.mutate(paymentMethod, {
+        onSuccess: (result) => {
+          if (paymentMethod === "ESEWA") {
+            setUuid(result.transactionUuid);
+            setSignature(result.signature);
+            setKhaltiPayUrl(null)
+            const data:EsewaPayment ={
+               amount:totalPrice,
+               transactionUuid:result.transactionUuid,
+               signature:result.signature,
+               productDeliveryCharge:0,
+               productServiceCharge:0,
+               taxAmount:0,
+               totalAmount:totalPrice,
+            }
+            submitEsewaPayment(data)
+          } else if (paymentMethod === "KHALTI") {
+            window.location.href = result.payment_url
+          }
+        },
+        onError: (error) => {
+          console.log(error);
+          alert("error")
+        },
+      });
+    };
+    
 
 
-function CheckoutDetail({cartArray}:CheckOutTableProps) {
-
-
-    const totalPrice = cartArray.reduce((acc, curr) => acc + curr.price, 0);
 
   return (
     <div className="w-full md:w-2/6 p-3">
@@ -33,22 +66,13 @@ function CheckoutDetail({cartArray}:CheckOutTableProps) {
       </div>
       <div>
         <p className="text-muted-foreground text-sm mb-2">Payment Method</p>
-        <RadioGroup defaultValue="esewa" className="flex flex-row space-x-2">
-          <div className="flex items-center">
-            <RadioGroupItem value="esewa" id="option-one" />
-            <Label htmlFor="option-one" className="text-sm pl-3">Esewa</Label>
-          </div>
-          <div className="flex items-center">
-            <RadioGroupItem value="khalti" id="option-two" />
-            <Label htmlFor="option-two" className="text-sm pl-3">Khalti</Label>
-          </div>
-          <div className="flex items-center">
-            <RadioGroupItem value="card" id="option-three" />
-            <Label htmlFor="option-three" className="text-sm pl-3">Card</Label>
-          </div>
-        </RadioGroup>
+        <Button className="w-full mt-4" onClick={()=>{purchase("KHALTI")}}>Pay by Kahalti</Button>
+        <Button className="w-full mt-4" onClick={()=>{purchase("ESEWA")}}>Pay by Esewa</Button>
+
+
+
+
       </div>
-      <Button className="w-full mt-4">Continue</Button>
     </div>
   </div>
   

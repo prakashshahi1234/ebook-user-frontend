@@ -16,9 +16,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import {Axios} from "@/utils/axios";
-import {useRouter} from "next/navigation";
-import {toast} from "sonner";
+import { Axios } from "@/utils/axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
 import action from "@/app/action";
 
@@ -32,13 +32,16 @@ const formSchema = z.object({
   socialLink: z.string(),
   description: z.string().max(200, "200 character maximum."),
   isSuspended: z.string().readonly(),
-})
+  mobileNo: z.string().refine((value) => /^[0-9]{10}$/i.test(value), {
+    message: "10-digit number",
+  }),
+});
 
 type FormData = z.infer<typeof formSchema>;
 
 export function ProfileForm(data: FormData) {
   const router = useRouter();
-
+       console.log(data)
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,24 +52,37 @@ export function ProfileForm(data: FormData) {
       socialLink: data.socialLink,
       description: data.description,
       isSuspended: data.isSuspended,
+      mobileNo:data.mobileNo
     },
   });
 
   const profileMutation = useMutation({
-    mutationFn: async ({ userId , name ,socialLink ,description , isSuspended } :FormData) =>
-      await Axios.post(`/update-user`, {userId , name ,socialLink ,description}),
-  });  
-  const { formState } = form;
+    mutationFn: async ({
+      userId,
+      name,
+      socialLink,
+      description,
+      isSuspended,
+      mobileNo
+    }: FormData) =>
+      await Axios.post(`/update-user`, {
+        userId,
+        name,
+        socialLink,
+        description,
+        mobileNo
+      }),
+  });
+  const { formState, watch } = form;
   const { isPending } = profileMutation;
-  
   function onSubmit(values: FormData) {
     profileMutation.mutate(values, {
       onSuccess: () => {
-        alert("saved..")
+        toast.success("saved..");
         // action()
       },
       onError: (error: any) => {
-        alert(error.message)
+        toast.error(error.message);
       },
     });
   }
@@ -89,8 +105,8 @@ export function ProfileForm(data: FormData) {
                   placeholder="shadcn"
                   {...field}
                   className="p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-green-500"
-                 readOnly
-               />
+                  readOnly
+                />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -181,6 +197,24 @@ export function ProfileForm(data: FormData) {
                   {...field}
                   className="text-sm text-green-500 font-sans p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                   readOnly
+                />
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="mobileNo"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-700">Phone No.</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="98XXXXXXXX"
+                  {...field}
+                  className="p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                 />
               </FormControl>
               <FormMessage className="text-red-500" />
