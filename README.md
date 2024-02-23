@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# eBook System Frontend 
 
-## Getting Started
+## Overview
 
-First, run the development server:
+Welcome to our comprehensive eBook System Frontend! This Next.js application provides an intuitive interface for users to create, purchase, and manage e-books. The frontend is designed to seamlessly integrate with the backend, offering features for tracking author activities, sales, earnings, and controlling piracy.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. **Google and  Email Authentication**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Users can log in securely using their Google accounts, ensuring a reliable and convenient authentication process.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 2. **E-Book Creation**
 
-## Learn More
+- Empower content creators to easily craft and share their knowledge or stories with a broader audience.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. **File Storage in AWS S3 Bucket**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- E-books are securely stored in an AWS S3 bucket, ensuring efficient and scalable file storage for easy access and retrieval.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 4. **Payment System Integration**
 
-## Deploy on Vercel
+- Seamlessly integrate with popular payment systems eSewa and Khalti, allowing users to make secure transactions when purchasing e-books.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. **Add to Cart and Checkout Functionality**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Users can effortlessly add e-books to their shopping cart and smoothly proceed through the checkout process.
+
+### 6. **Author Tracking**
+
+- Track and analyze author activities, providing insights into book creation, sales, and overall performance.
+
+
+
+### 7. **Piracy Control**
+
+- Implement piracy control measures by suspending or deleting user accounts and associated e-books involved in unauthorized activities.
+
+## Technologies Used
+
+- **Frontend Framework:** Next.js Tailwind css
+
+## Setup Instructions
+
+1. **Clone the Repository:**
+   - Clone the repository to your local machine.
+
+2. **Install Dependencies:**
+   - Install the necessary dependencies for the Next.js project.
+
+3. **Authentication Setup:**
+   - Set up environment variables for authentication.
+
+4. **Run the Frontend:**
+   - Execute the command to run the Next.js application locally.
